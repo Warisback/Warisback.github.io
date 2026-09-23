@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malik · Electronics Engineer</title>
+<meta name="description" content="Malik, EEE student at the University of Huddersfield and Electronics Engineer at PerkinElmer. Hardware, firmware and AI projects.">
+<meta property="og:title" content="Malik · Electronics Engineer">
+<meta property="og:description" content="EEE student at the University of Huddersfield. Electronics Engineer at PerkinElmer.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='44' fill='%23c4bae0'%3Em%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <canvas id="attractor-canvas" aria-hidden="true"></canvas>
+
+  <div class="hero-inner">
+    <h1 class="name" aria-label="malik">malik</h1>
+
+    <p class="bio">
+      <span class="bio-line">EEE student at the University of Huddersfield.</span><br>
+      <span class="bio-line">Electronics Engineer at PerkinElmer</span>
+    </p>
+
+    <nav class="hero-nav" aria-label="Primary">
+      <a href="#projects" data-scroll>Projects</a>
+      <a href="#hardware" data-scroll>Hardware</a>
+      <a href="https://github.com/Warisback" target="_blank" rel="noopener">GitHub</a>
+      <a href="#socials" data-scroll>Socials</a>
+      <button id="theme-toggle" class="linklike" aria-label="Toggle colour theme">Light</button>
+      <span class="attractor-ctl">
+        <button id="attr-prev" class="linklike arrow" aria-label="Previous attractor">&lt;</button><!--
+     --><button id="attr-next" class="linklike arrow" aria-label="Next attractor">&gt;</button>
+        <em id="attr-name" aria-live="polite"></em>
+      </span>
+    </nav>
+  </div>
+
+  <a href="#projects" class="scroll-hint" data-scroll aria-label="Scroll to projects">↓</a>
+</header>
+
+<main>
+<!-- ============ PROJECTS ============ -->
+<section id="projects" class="section">
+  <h2 class="section-title reveal">Projects</h2>
+
+  <!-- Pipelined RISC-V CPU -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/riscv-pipelined-cpu" target="_blank" rel="noopener">Pipelined RISC-V CPU</a></h3>
+      <p class="meta">Digital design · in progress</p>
+      <p class="desc">A 32-bit five-stage pipelined RISC-V core in Verilog: fetch, decode, execute,
+        memory and write-back, with forwarding, hazard detection and pipeline flush on taken
+        branches. The successor to my single-cycle core, designed for cycle-accurate verification
+        against self-checking testbenches.</p>
+      <p class="tags">Verilog · RV32I · 5-stage pipeline · hazard forwarding · ModelSim</p>
+      <p class="links"><a href="https://github.com/Warisback/riscv-pipelined-cpu" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb" href="https://github.com/Warisback/riscv-pipelined-cpu" target="_blank" rel="noopener" tabindex="-1">
+      <img src="assets/img/riscv.jpg" alt="Five-stage RISC-V pipeline datapath: fetch, decode, execute, memory, write-back" loading="lazy">
+    </a>
+  </article>
+
+  <!-- FignalAI -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/FignalAI" target="_blank" rel="noopener">FignalAI</a></h3>
+      <p class="meta">Cerebras × Google DeepMind hackathon · 2026</p>
+      <p class="desc">A self-healing RTL debug agent. Feed it a buggy Verilog module and its testbench:
+        it runs the simulation, reads the waveform with a vision agent, debates the root cause across
+        five parallel agents, patches the source and re-runs the simulator to prove the fix.
+        The oracle is always the simulator, never an LLM.</p>
+      <p class="tags">Python · Verilog · Gemma on Cerebras · VCD parsing</p>
+      <p class="links"><a href="https://github.com/Warisback/FignalAI" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb" href="https://github.com/Warisback/FignalAI" target="_blank" rel="noopener" tabindex="-1">
+      <img src="assets/img/chip.jpg" alt="Processor on a printed circuit board" loading="lazy">
+    </a>
+  </article>
+
+  <!-- Vokal -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener">Vokal</a></h3>
+      <p class="meta">Hardware + firmware · 2026</p>
+      <p class="desc">A table-top meeting puck that records a conversation and lets a human mark what
+        mattered while it is happening: tap to flag a decision, double-tap the table to mark eyes-free,
+        flip it face-down to pause. A full-screen recording banner makes consent visible to everyone
+        at the table, and every mark is fed to the structuring model as signal a transcript alone
+        can't recover.</p>
+      <p class="tags">C · ESP32-S3 · 368×448 AMOLED · ES8311 audio · QMI8658 IMU</p>
+      <p class="links"><a href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb thumb-svg" href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+      <svg viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.2">
+        <ellipse cx="240" cy="168" rx="118" ry="98"/>
+        <ellipse cx="240" cy="150" rx="118" ry="94"/>
+        <rect x="176" y="98" width="128" height="96" rx="10"/>
+        <text x="240" y="132" text-anchor="middle" font-size="13" letter-spacing="4" stroke="none" fill="currentColor" font-family="inherit">RECORDING</text>
+        <polyline points="192,166 208,166 216,150 226,180 236,142 246,176 254,160 268,160" stroke-width="1.6"/>
+        <line x1="196" y1="182" x2="284" y2="182" stroke-dasharray="2 5"/>
+        <path d="M 348 118 a 62 62 0 0 1 0 88" opacity=".55"/>
+        <path d="M 366 102 a 88 88 0 0 1 0 120" opacity=".35"/>
+        <path d="M 132 118 a 62 62 0 0 0 0 88" opacity=".55"/>
+        <path d="M 114 102 a 88 88 0 0 0 0 120" opacity=".35"/>
+      </svg>
+    </a>
+  </article>
+
+  <!-- SignBridge -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/Sign-Language-Interpreter-Project" target="_blank" rel="noopener">SignBridge</a></h3>
+      <p class="meta">Hackathon · 1st place for innovation &amp; social impact</p>
+      <p class="desc">Real-time two-way communication between deaf and hearing users, built in a single
+        day: an LSTM over MediaPipe hand landmarks converts sign language to text at 30&nbsp;fps with
+        confidence-scored inference, while speech is transcribed the other way. One interface, no
+        human interpreter needed.</p>
+      <p class="tags">Python · OpenCV · MediaPipe · TensorFlow/Keras LSTM</p>
+      <p class="links"><a href="https://github.com/Warisback/Sign-Language-Interpreter-Project" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb thumb-svg" href="https://github.com/Warisback/Sign-Language-Interpreter-Project" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+      <svg viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.2">
+        <g stroke-width="1">
+          <path d="M 200 238 L 186 196 L 178 166 L 172 142"/>
+          <path d="M 200 238 L 206 186 L 208 152 L 209 124"/>
+          <path d="M 200 238 L 226 190 L 236 158 L 243 132"/>
+          <path d="M 200 238 L 244 200 L 260 176 L 272 156"/>
+          <path d="M 200 238 L 172 214 L 148 200 L 128 192"/>
+        </g>
+        <g fill="currentColor" stroke="none">
+          <circle cx="200" cy="238" r="4"/><circle cx="186" cy="196" r="3"/><circle cx="178" cy="166" r="3"/><circle cx="172" cy="142" r="3.5"/>
+          <circle cx="206" cy="186" r="3"/><circle cx="208" cy="152" r="3"/><circle cx="209" cy="124" r="3.5"/>
+          <circle cx="226" cy="190" r="3"/><circle cx="236" cy="158" r="3"/><circle cx="243" cy="132" r="3.5"/>
+          <circle cx="244" cy="200" r="3"/><circle cx="260" cy="176" r="3"/><circle cx="272" cy="156" r="3.5"/>
+          <circle cx="172" cy="214" r="3"/><circle cx="148" cy="200" r="3"/><circle cx="128" cy="192" r="3.5"/>
+        </g>
+        <path d="M 300 150 h 48" stroke-dasharray="3 5"/>
+        <path d="M 340 138 l 12 12 l -12 12"/>
+        <text x="368" y="144" font-size="14" stroke="none" fill="currentColor" font-family="inherit" font-style="italic">"hello,</text>
+        <text x="368" y="164" font-size="14" stroke="none" fill="currentColor" font-family="inherit" font-style="italic">nice to meet you"</text>
+      </svg>
+    </a>
+  </article>
+
+  <!-- First Line AI -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/First-Line-AI" target="_blank" rel="noopener">First Line AI</a></h3>
+      <p class="meta">Digital health · built with a team of four clinicians</p>
+      <p class="desc">Medication check-ins that reach the GP practice before the review, built for
+        GLP-1 users. The practice sees adherence, stopped medicines and the patient's own words
+        ahead of the appointment, and flags are derived from the dose log, never stored. I was the
+        engineer on a team of four clinicians: I designed the system architecture and built the
+        product end to end.</p>
+      <p class="tags">TypeScript · Next.js · Zustand</p>
+      <p class="links"><a href="https://github.com/Warisback/First-Line-AI" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb" href="https://github.com/Warisback/First-Line-AI" target="_blank" rel="noopener" tabindex="-1">
+      <img src="assets/img/firstline.jpg" alt="First Line AI patient app: dose reminders, dose logging and approved answers" loading="lazy">
+    </a>
+  </article>
+
+  <!-- Swypr -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/swypr" target="_blank" rel="noopener">Swypr</a></h3>
+      <p class="meta">Product build · 2026</p>
+      <p class="desc">An inbox that makes room for you. Creators drown in thousands of DMs a month,
+        mostly the same questions. Swypr triages the queue, spots what has been asked before and
+        drafts replies from the creator's own past answers. Still you, just with a little
+        more time.</p>
+      <p class="tags">React · Express · Framer Motion</p>
+      <p class="links"><a href="https://github.com/Warisback/swypr" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb" href="https://github.com/Warisback/swypr" target="_blank" rel="noopener" tabindex="-1">
+      <img src="assets/img/swypr.jpg" alt="Swypr: a creator's DM inbox with an answer bank drafting replies" loading="lazy">
+    </a>
+  </article>
+
+  <!-- Legwork -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/FEMUR" target="_blank" rel="noopener">Legwork</a></h3>
+      <p class="meta">Agentic payments · 2026</p>
+      <p class="desc">People working for agents. An AI agent posts a real-world micro-task, a person
+        does it from their phone, an image model verifies the photo, and escrowed USDC on Stellar is
+        released to them in seconds, with a receipt. Money moves only from database state, never from
+        model output.</p>
+      <p class="tags">TypeScript · Next.js · Stellar · Drizzle</p>
+      <p class="links"><a href="https://github.com/Warisback/FEMUR" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb" href="https://github.com/Warisback/FEMUR" target="_blank" rel="noopener" tabindex="-1">
+      <img src="assets/img/legwork.jpg" alt="Legwork: people working for agents, escrowed USDC on Stellar" loading="lazy">
+    </a>
+  </article>
+
+  <!-- HoldBack -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/Holdback-AI" target="_blank" rel="noopener">HoldBack</a></h3>
+      <p class="meta">Xero hackathon · 2026</p>
+      <p class="desc">A UK construction retention &amp; CIS agent for Xero. Reads a subcontractor bill,
+        splits the retention into its own tracked bill so tax is assessed correctly, and keeps the
+        held-back money visible until it is released: the 5% that construction firms routinely forget
+        to ever collect.</p>
+      <p class="tags">Python · Flask · Xero API · CIS rules</p>
+      <p class="links"><a href="https://github.com/Warisback/Holdback-AI" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb thumb-svg" href="https://github.com/Warisback/Holdback-AI" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+      <svg viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.2">
+        <rect x="90" y="60" width="140" height="180" rx="4"/>
+        <line x1="108" y1="92" x2="212" y2="92"/>
+        <line x1="108" y1="116" x2="196" y2="116"/>
+        <line x1="108" y1="140" x2="204" y2="140"/>
+        <line x1="108" y1="164" x2="180" y2="164"/>
+        <path d="M 252 150 h 44" stroke-dasharray="3 5"/>
+        <path d="M 288 138 l 12 12 l -12 12"/>
+        <rect x="318" y="60" width="96" height="112" rx="4"/>
+        <text x="366" y="122" text-anchor="middle" font-size="15" stroke="none" fill="currentColor" font-family="inherit">95%</text>
+        <rect x="318" y="192" width="96" height="48" rx="4" stroke-dasharray="4 4"/>
+        <text x="366" y="221" text-anchor="middle" font-size="13" stroke="none" fill="currentColor" opacity=".8" font-family="inherit" font-style="italic">5% held</text>
+      </svg>
+    </a>
+  </article>
+</section>
+
+<!-- ============ HARDWARE ============ -->
+<section id="hardware" class="section">
+  <h2 class="section-title reveal">Hardware</h2>
+  <div class="hw-grid">
+
+    <article class="hw-card reveal">
+      <svg class="hw-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4">
+        <circle cx="14" cy="14" r="6"/>
+        <line x1="14" y1="3" x2="14" y2="6"/><line x1="3" y1="14" x2="6" y2="14"/><line x1="6.2" y1="6.2" x2="8.3" y2="8.3"/><line x1="22" y1="6" x2="20" y2="8"/>
+        <rect x="24" y="26" width="34" height="24" rx="2" transform="skewX(-8)"/>
+        <line x1="30" y1="26" x2="27" y2="50"/><line x1="41" y1="26" x2="38" y2="50"/><line x1="52" y1="26" x2="49" y2="50"/>
+        <line x1="22.8" y1="38" x2="56.8" y2="38"/>
+      </svg>
+      <h3>PV panel parameter monitor</h3>
+      <p class="desc">Analogue signal conditioning bringing a silicon PV panel's voltage and current
+        sensors into the 12-bit ADC of an STM32F042, with C firmware sampling, processing and showing
+        live readings on an LCD. Characterised the panel's I-V response to inform MPPT design.</p>
+      <p class="tags">STM32 · C · signal conditioning · ADC · MPPT</p>
+    </article>
+
+    <article class="hw-card reveal">
+      <svg class="hw-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4">
+        <line x1="8" y1="32" x2="26" y2="32"/>
+        <line x1="26" y1="18" x2="26" y2="46"/>
+        <line x1="32" y1="18" x2="32" y2="46"/>
+        <line x1="32" y1="32" x2="50" y2="32"/>
+        <path d="M 14 10 h 10 m -5 -5 v 10" stroke-width="1.2"/>
+        <path d="M 40 52 l 8 0 m -4 0 l -3 6 m 3 -6 l 3 6" opacity=".7"/>
+        <path d="M 6 54 q 7 -5 14 0" opacity=".5"/><path d="M 44 12 q 7 -5 14 0" opacity=".5"/>
+      </svg>
+      <h3>Regenerative energy storage</h3>
+      <p class="desc">Railway Challenge, ongoing: a high-power supercapacitor energy-storage system
+        recovering regenerative braking energy through a bidirectional DC-DC interface with electrical
+        isolation and protection, instrumented for real-time voltage, current and energy readings.</p>
+      <p class="tags">power electronics · supercapacitors · DC-DC · instrumentation</p>
+    </article>
+
+    <article class="hw-card reveal">
+      <svg class="hw-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4">
+        <line x1="12" y1="12" x2="12" y2="52"/><circle cx="12" cy="24" r="3.4"/>
+        <line x1="26" y1="12" x2="26" y2="52"/><circle cx="26" cy="42" r="3.4"/>
+        <line x1="40" y1="12" x2="40" y2="52"/><circle cx="40" cy="30" r="3.4"/>
+        <line x1="54" y1="12" x2="54" y2="52"/><circle cx="54" cy="20" r="3.4"/>
+      </svg>
+      <h3>31-band graphic equalizer</h3>
+      <p class="desc">A 31-band analog audio equalizer designed and simulated in Multisim, then built
+        and tested on PCB: laboratory measurements validated frequency response, gain control and band
+        isolation while debugging signal integrity, noise and component tolerances.</p>
+      <p class="tags">op-amps · Multisim · PCB design · signal analysis</p>
+    </article>
+
+    <article class="hw-card reveal">
+      <svg class="hw-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4">
+        <rect x="18" y="16" width="28" height="32" rx="2"/>
+        <line x1="10" y1="22" x2="18" y2="22"/><line x1="10" y1="32" x2="18" y2="32"/><line x1="10" y1="42" x2="18" y2="42"/>
+        <line x1="46" y1="22" x2="54" y2="22"/><line x1="46" y1="32" x2="54" y2="32"/><line x1="46" y1="42" x2="54" y2="42"/>
+        <circle cx="26" cy="56" r="2" opacity=".7"/><circle cx="34" cy="56" r="2" opacity=".7"/><circle cx="42" cy="56" r="2" opacity=".7"/>
+        <text x="32" y="35" text-anchor="middle" font-size="9" stroke="none" fill="currentColor" font-family="inherit">8-bit</text>
+      </svg>
+      <h3>8-bit breadboard CPU</h3>
+      <p class="desc">A CPU built from bare logic ICs: ALU, registers and program counter with
+        hand-designed timing and control circuits, data paths monitored on LEDs under a manual clock,
+        and timing and propagation issues debugged with oscilloscope and multimeter.</p>
+      <p class="tags">logic ICs · digital design · oscilloscope · multimeter</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ SOCIALS ============ -->
+<section id="socials" class="section">
+  <h2 class="section-title reveal">Socials</h2>
+  <nav class="socials reveal" aria-label="Social links">
+    <a href="https://github.com/Warisback" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="mailto:yussuffmalik2k6@gmail.com">Email ↗</a>
+    <!-- <a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn ↗</a> -->
+  </nav>
+</section>
+</main>
+
+<footer class="footer">
+  <p>© 2026 Malik · drawn by a strange attractor</p>
+</footer>
+
+<script src="js/attractors.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
