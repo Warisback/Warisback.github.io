@@ -104,9 +104,12 @@
     baseAlpha = parseFloat(cs.getPropertyValue("--wisp-alpha")) || 0.48;
   }
 
-  // ambient anchor: where the field lives when the cursor is idle
-  function anchorX() { return W < 860 * DPR ? W * 0.5 : W * 0.66; }
-  function anchorY() { return H * 0.5; }
+  // ambient anchor: where the field lives when the cursor is idle.
+  // On narrow screens the text stacks at the top, so push the field
+  // down into the empty lower half instead of behind the words.
+  function narrow() { return W < 860 * DPR; }
+  function anchorX() { return narrow() ? W * 0.5 : W * 0.66; }
+  function anchorY() { return narrow() ? H * 0.68 : H * 0.5; }
 
   // slow lissajous wander around the anchor
   function wanderPoint(out) {

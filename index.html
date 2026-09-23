@@ -23,7 +23,7 @@
     <h1 class="name" aria-label="malik">malik</h1>
 
     <p class="bio">
-      <span class="bio-line">EEE student at the University of Huddersfield.</span><br>
+      <span class="bio-line">EEE student at the University of Huddersfield.</span>
       <span class="bio-line">Electronics Engineer at PerkinElmer</span>
     </p>
 
@@ -87,13 +87,14 @@
   <article class="project reveal">
     <div class="project-text">
       <h3><a href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener">Vokal</a></h3>
-      <p class="meta">Hardware + firmware · 2026</p>
-      <p class="desc">A table-top meeting puck that records a conversation and lets a human mark what
-        mattered while it is happening: tap to flag a decision, double-tap the table to mark eyes-free,
-        flip it face-down to pause. A full-screen recording banner makes consent visible to everyone
-        at the table, and every mark is fed to the structuring model as signal a transcript alone
-        can't recover.</p>
-      <p class="tags">C · ESP32-S3 · 368×448 AMOLED · ES8311 audio · QMI8658 IMU</p>
+      <p class="meta">Assistive hardware · personal project</p>
+      <p class="desc">A voice device for people with speech disorders, built to give them independence
+        in everyday conversation: a hand-held puck that captures speech and runs it through open-source
+        voice models, with no phone and no internet needed. The ESP32-S3 firmware does dual-core 16&nbsp;kHz
+        capture, an AMOLED touch UI and an on-device HTTP API over its own WiFi access point; the voice
+        pipeline is tuned for latency, and on the puck's own recordings a phrase round-trips through
+        speech-to-text and back to speech in under a second of model time on a laptop CPU.</p>
+      <p class="tags">C · ESP32-S3 · ES8311 audio · faster-whisper · Piper TTS</p>
       <p class="links"><a href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener">Code ↗</a></p>
     </div>
     <a class="thumb thumb-svg" href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
@@ -101,7 +102,7 @@
         <ellipse cx="240" cy="168" rx="118" ry="98"/>
         <ellipse cx="240" cy="150" rx="118" ry="94"/>
         <rect x="176" y="98" width="128" height="96" rx="10"/>
-        <text x="240" y="132" text-anchor="middle" font-size="13" letter-spacing="4" stroke="none" fill="currentColor" font-family="inherit">RECORDING</text>
+        <text x="240" y="132" text-anchor="middle" font-size="13" letter-spacing="4" stroke="none" fill="currentColor" font-family="inherit">VOKAL</text>
         <polyline points="192,166 208,166 216,150 226,180 236,142 246,176 254,160 268,160" stroke-width="1.6"/>
         <line x1="196" y1="182" x2="284" y2="182" stroke-dasharray="2 5"/>
         <path d="M 348 118 a 62 62 0 0 1 0 88" opacity=".55"/>
