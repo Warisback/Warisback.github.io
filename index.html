@@ -49,20 +49,50 @@
 <section id="projects" class="section">
   <h2 class="section-title reveal">Projects</h2>
 
-  <!-- Pipelined RISC-V CPU -->
+  <!-- Vokal -->
   <article class="project reveal">
     <div class="project-text">
-      <h3><a href="https://github.com/Warisback/riscv-pipelined-cpu" target="_blank" rel="noopener">Pipelined RISC-V CPU</a></h3>
-      <p class="meta">Digital design · in progress</p>
-      <p class="desc">A 32-bit five-stage pipelined RISC-V core in Verilog: fetch, decode, execute,
-        memory and write-back, with forwarding, hazard detection and pipeline flush on taken
-        branches. The successor to my single-cycle core, designed for cycle-accurate verification
-        against self-checking testbenches.</p>
-      <p class="tags">Verilog · RV32I · 5-stage pipeline · hazard forwarding · ModelSim</p>
-      <p class="links"><a href="https://github.com/Warisback/riscv-pipelined-cpu" target="_blank" rel="noopener">Code ↗</a></p>
+      <h3><a href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener">Vokal</a></h3>
+      <p class="meta">Assistive speech · on-device ML · in progress</p>
+      <p class="desc">A voice for people whose words are intact but whose voice cannot carry them,
+        after a laryngectomy or as MND weakens it. Hold to talk: Whisper transcribes in the browser on
+        the device itself, a guard strips the words the model invents on silence, and nothing is said
+        aloud until the person checks the text and taps Speak. It began as an ESP32-S3 hand-held device
+        feeding a laptop; next I am measuring and fine-tuning Whisper on dysarthric speech (TORGO).</p>
+      <p class="tags">JavaScript · Whisper · transformers.js · WebGPU · Python · faster-whisper</p>
+      <p class="links"><a href="https://warisback.github.io/Vokal/" target="_blank" rel="noopener">Try it ↗</a> <a href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener">Code ↗</a></p>
     </div>
-    <a class="thumb" href="https://github.com/Warisback/riscv-pipelined-cpu" target="_blank" rel="noopener" tabindex="-1">
-      <img src="assets/img/riscv.jpg" alt="Five-stage RISC-V pipeline datapath: fetch, decode, execute, memory, write-back" loading="lazy">
+    <a class="thumb thumb-svg" href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+      <svg viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.2">
+        <ellipse cx="240" cy="168" rx="118" ry="98"/>
+        <ellipse cx="240" cy="150" rx="118" ry="94"/>
+        <rect x="176" y="98" width="128" height="96" rx="10"/>
+        <text x="240" y="132" text-anchor="middle" font-size="13" letter-spacing="4" stroke="none" fill="currentColor" font-family="inherit">VOKAL</text>
+        <polyline points="192,166 208,166 216,150 226,180 236,142 246,176 254,160 268,160" stroke-width="1.6"/>
+        <line x1="196" y1="182" x2="284" y2="182" stroke-dasharray="2 5"/>
+        <path d="M 348 118 a 62 62 0 0 1 0 88" opacity=".55"/>
+        <path d="M 366 102 a 88 88 0 0 1 0 120" opacity=".35"/>
+        <path d="M 132 118 a 62 62 0 0 0 0 88" opacity=".55"/>
+        <path d="M 114 102 a 88 88 0 0 0 0 120" opacity=".35"/>
+      </svg>
+    </a>
+  </article>
+
+  <!-- RV32I single-cycle CPU -->
+  <article class="project reveal">
+    <div class="project-text">
+      <h3><a href="https://github.com/Warisback/riscv-single-cycle-cpu" target="_blank" rel="noopener">RV32I single-cycle CPU</a></h3>
+      <p class="meta">Digital design · verification</p>
+      <p class="desc">A single-cycle RISC-V processor in SystemVerilog, checked instruction by
+        instruction against a Python instruction-set simulator. All 40 applicable official
+        riscv-tests and 220 constrained-random programs produce traces identical to the simulator,
+        and 10 of 10 deliberately planted bugs are caught, one of them only by the random programs.
+        One instruction retires every clock: 90,494 instructions in 90,494 cycles.</p>
+      <p class="tags">SystemVerilog · Icarus Verilog · GTKWave · Python ISS · riscv-tests</p>
+      <p class="links"><a href="https://github.com/Warisback/riscv-single-cycle-cpu" target="_blank" rel="noopener">Code ↗</a></p>
+    </div>
+    <a class="thumb" href="https://github.com/Warisback/riscv-single-cycle-cpu" target="_blank" rel="noopener" tabindex="-1">
+      <img src="assets/img/riscv-wave.jpg" alt="GTKWave trace of the single-cycle RV32I core running its smoke test: one instruction retires every clock" loading="lazy">
     </a>
   </article>
 
@@ -80,36 +110,6 @@
     </div>
     <a class="thumb" href="https://github.com/Warisback/FignalAI" target="_blank" rel="noopener" tabindex="-1">
       <img src="assets/img/chip.jpg" alt="Processor on a printed circuit board" loading="lazy">
-    </a>
-  </article>
-
-  <!-- Vokal -->
-  <article class="project reveal">
-    <div class="project-text">
-      <h3><a href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener">Vokal</a></h3>
-      <p class="meta">Assistive hardware · personal project</p>
-      <p class="desc">A voice device for people with speech disorders, built to give them independence
-        in everyday conversation: a hand-held puck that captures speech and runs it through open-source
-        voice models, with no phone and no internet needed. The ESP32-S3 firmware does dual-core 16&nbsp;kHz
-        capture, an AMOLED touch UI and an on-device HTTP API over its own WiFi access point; the voice
-        pipeline is tuned for latency, and on the puck's own recordings a phrase round-trips through
-        speech-to-text and back to speech in under a second of model time on a laptop CPU.</p>
-      <p class="tags">C · ESP32-S3 · ES8311 audio · faster-whisper · Piper TTS</p>
-      <p class="links"><a href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener">Code ↗</a></p>
-    </div>
-    <a class="thumb thumb-svg" href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
-      <svg viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.2">
-        <ellipse cx="240" cy="168" rx="118" ry="98"/>
-        <ellipse cx="240" cy="150" rx="118" ry="94"/>
-        <rect x="176" y="98" width="128" height="96" rx="10"/>
-        <text x="240" y="132" text-anchor="middle" font-size="13" letter-spacing="4" stroke="none" fill="currentColor" font-family="inherit">VOKAL</text>
-        <polyline points="192,166 208,166 216,150 226,180 236,142 246,176 254,160 268,160" stroke-width="1.6"/>
-        <line x1="196" y1="182" x2="284" y2="182" stroke-dasharray="2 5"/>
-        <path d="M 348 118 a 62 62 0 0 1 0 88" opacity=".55"/>
-        <path d="M 366 102 a 88 88 0 0 1 0 120" opacity=".35"/>
-        <path d="M 132 118 a 62 62 0 0 0 0 88" opacity=".55"/>
-        <path d="M 114 102 a 88 88 0 0 0 0 120" opacity=".35"/>
-      </svg>
     </a>
   </article>
 
@@ -164,40 +164,6 @@
     </div>
     <a class="thumb" href="https://github.com/Warisback/First-Line-AI" target="_blank" rel="noopener" tabindex="-1">
       <img src="assets/img/firstline.jpg" alt="First Line AI patient app: dose reminders, dose logging and approved answers" loading="lazy">
-    </a>
-  </article>
-
-  <!-- Swypr -->
-  <article class="project reveal">
-    <div class="project-text">
-      <h3><a href="https://github.com/Warisback/swypr" target="_blank" rel="noopener">Swypr</a></h3>
-      <p class="meta">Product build</p>
-      <p class="desc">An inbox that makes room for you. Creators drown in thousands of DMs a month,
-        mostly the same questions. Swypr triages the queue, spots what has been asked before and
-        drafts replies from the creator's own past answers. Still you, just with a little
-        more time.</p>
-      <p class="tags">React · Express · Framer Motion</p>
-      <p class="links"><a href="https://github.com/Warisback/swypr" target="_blank" rel="noopener">Code ↗</a></p>
-    </div>
-    <a class="thumb" href="https://github.com/Warisback/swypr" target="_blank" rel="noopener" tabindex="-1">
-      <img src="assets/img/swypr.jpg" alt="Swypr: a creator's DM inbox with an answer bank drafting replies" loading="lazy">
-    </a>
-  </article>
-
-  <!-- Legwork -->
-  <article class="project reveal">
-    <div class="project-text">
-      <h3><a href="https://github.com/Warisback/FEMUR" target="_blank" rel="noopener">Legwork</a></h3>
-      <p class="meta">Agentic payments · 2026</p>
-      <p class="desc">People working for agents. An AI agent posts a real-world micro-task, a person
-        does it from their phone, an image model verifies the photo, and escrowed USDC on Stellar is
-        released to them in seconds, with a receipt. Money moves only from database state, never from
-        model output.</p>
-      <p class="tags">TypeScript · Next.js · Stellar · Drizzle</p>
-      <p class="links"><a href="https://github.com/Warisback/FEMUR" target="_blank" rel="noopener">Code ↗</a></p>
-    </div>
-    <a class="thumb" href="https://github.com/Warisback/FEMUR" target="_blank" rel="noopener" tabindex="-1">
-      <img src="assets/img/legwork.jpg" alt="Legwork: people working for agents, escrowed USDC on Stellar" loading="lazy">
     </a>
   </article>
 
