@@ -2,10 +2,13 @@
    Strange-attractor wisps.
    Short particle trails advected through a 3D chaotic system.
    The canvas is cleared and every trail redrawn each frame, so
-   nothing ever accumulates: each streak eases in, ages, and
-   exponentially fades away. New particles are seeded from the
-   cursor while it moves; a slow wandering point keeps the field
-   alive when it doesn't.
+   nothing ever accumulates: each streak is born at the seed point,
+   ages, and fades away exponentially.
+
+   The seed point follows the pointer (mouse, pen or finger) while
+   it moves. When it is idle, a virtual cursor sweeps a slow
+   Lissajous path through the field. The seed point eases towards
+   whichever target is active, so the flow never jumps.
    ============================================================ */
 
 (function () {
@@ -25,7 +28,7 @@
   const ATTRACTORS = [
     {
       name: "Lorenz", u: 1 / 165, rate: 0.36, cap: 0.01,
-      seed: (dx, dy) => [dx, dx, dy + 25],
+      seed: (dx, dy, s) => { s[0] = dx; s[1] = dx; s[2] = dy + 25; },
       f: (x, y, z, d) => {
         d[0] = 10 * (y - x);
         d[1] = x * (28 - z) - y;
@@ -35,7 +38,7 @@
     },
     {
       name: "Thomas", u: 1 / 8.5, rate: 3.0, cap: 0.05,
-      seed: (dx, dy) => [dx, dy, (dx - dy) / 2],
+      seed: (dx, dy, s) => { s[0] = dx; s[1] = dy; s[2] = (dx - dy) / 2; },
       f: (x, y, z, d) => {
         const b = 0.208186;
         d[0] = Math.sin(y) - b * x;
@@ -46,7 +49,7 @@
     },
     {
       name: "Aizawa", u: 1 / 3.2, rate: 1.1, cap: 0.012,
-      seed: (dx, dy) => [dx, 0.2, dy + 0.55],
+      seed: (dx, dy, s) => { s[0] = dx; s[1] = 0.2; s[2] = dy + 0.55; },
       f: (x, y, z, d) => {
         const a = 0.95, b = 0.7, c = 0.6, e = 0.25, ff = 0.1;
         d[0] = (z - b) * x - 3.5 * y;
@@ -57,7 +60,7 @@
     },
     {
       name: "Halvorsen", u: 1 / 26, rate: 0.5, cap: 0.01,
-      seed: (dx, dy) => [dx - 2, dy - 2, -2],
+      seed: (dx, dy, s) => { s[0] = dx - 2; s[1] = dy - 2; s[2] = -2; },
       f: (x, y, z, d) => {
         const a = 1.89;
         d[0] = -a * x - 4 * y - 4 * z - y * y;
@@ -68,7 +71,7 @@
     },
     {
       name: "Dadras", u: 1 / 24, rate: 0.55, cap: 0.012,
-      seed: (dx, dy) => [dx, dy * 0.8, 0],
+      seed: (dx, dy, s) => { s[0] = dx; s[1] = dy * 0.8; s[2] = dy; },
       f: (x, y, z, d) => {
         d[0] = y - 3 * x + 2.7 * y * z;
         d[1] = 1.7 * y - x * z + z;
@@ -79,54 +82,63 @@
   ];
 
   /* ---------- tuning ---------- */
-  const TRAIL = 40;         // points kept per streak
-  const FADE = 0.95;        // exponential age fade
-  const MAX_PARTICLES = 900;
-  const SPAWN_CURSOR = 3;   // per frame while the pointer moves
-  const SPAWN_AMBIENT = 3;  // per frame from the wandering point
-  const CURSOR_HOLD = 1.4;  // s of cursor spawning after the last move
+  const TRAIL = 40;          // points kept per streak
+  const TICK = 1 / 60;       // s of simulation between trail points, whatever the frame rate
+  const FADE = 1.2;          // exponential age fade, per second
+  const SPAWN_RATE = 180;    // streaks seeded per second (not per frame, so 120 Hz screens match 60 Hz)
+  const MAX_PARTICLES = 700;
+  const JITTER = 6;          // CSS px of scatter around the seed point
+  const POINTER_HOLD = 1.4;  // s the pointer stays in charge after it stops moving
+  const ALPHA_STEPS = 64;    // stroke opacity is quantised so styles can be cached
+  const PIXEL_BUDGET = 2.4e6; // max backing-store pixels for the canvas
 
   /* ---------- state ---------- */
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let current = 0;
-  let particles = [];
-  let W = 0, H = 0, DPR = 1, minDim = 0;
-  let running = false, rafId = 0, lastT = 0, elapsed = 0;
-  let mouseX = 0, mouseY = 0, sinceMove = 99;
-  let wisp = "199,189,226", baseAlpha = 0.48;
+  let W = 0, H = 0, DPR = 1, minDim = 0;   // CSS pixels
+  let running = false, rafId = 0, lastT = 0;
+  let vt = 0, spawnDebt = 0, intensity = 0;
+  let pointerX = 0, pointerY = 0, sinceMove = 99;
+  let seedX = 0, seedY = 0;
+  let styles = [];
   const d3 = [0, 0, 0], o2 = [0, 0];
+
+  // Particles are pooled, and each trail is a fixed-size ring buffer, so a
+  // frame allocates nothing and never shifts arrays.
+  let live = [];
+  const pool = [];
+  function makeParticle() {
+    return { s: new Float64Array(3), xs: new Float32Array(TRAIL), ys: new Float32Array(TRAIL), head: -1, len: 0, age: 0, phase: 0 };
+  }
 
   function attr() { return ATTRACTORS[current]; }
 
   function readColors() {
     const cs = getComputedStyle(document.documentElement);
-    wisp = (cs.getPropertyValue("--wisp") || "199,189,226").trim();
-    baseAlpha = parseFloat(cs.getPropertyValue("--wisp-alpha")) || 0.48;
+    const wisp = (cs.getPropertyValue("--wisp") || "199,189,226").trim();
+    const peak = parseFloat(cs.getPropertyValue("--wisp-alpha")) || 0.5;
+    styles = [];
+    for (let i = 0; i <= ALPHA_STEPS; i++) {
+      styles.push(`rgba(${wisp},${((peak * i) / ALPHA_STEPS).toFixed(4)})`);
+    }
   }
 
-  // ambient anchor: where the field lives when the cursor is idle.
-  // On narrow screens the text stacks at the top, so push the field
-  // down into the empty lower half instead of behind the words.
-  function narrow() { return W < 860 * DPR; }
+  // Where the field lives. On narrow screens the text stacks at the top,
+  // so the field sits in the empty lower half instead of behind the words.
+  const narrowMQ = window.matchMedia("(max-width: 860px)"); // same breakpoint as the CSS mask
+  function narrow() { return narrowMQ.matches; }
   function anchorX() { return narrow() ? W * 0.5 : W * 0.66; }
   function anchorY() { return narrow() ? H * 0.68 : H * 0.5; }
 
-  // slow lissajous wander around the anchor
-  function wanderPoint(out) {
-    const r = minDim * 0.22;
-    out[0] = anchorX() + Math.sin(elapsed * 0.21) * r * 1.25;
-    out[1] = anchorY() + Math.sin(elapsed * 0.157 + 1.7) * r;
-  }
-  const wp = [0, 0];
-
-  function spawn(px, py, jitter) {
+  function spawn(px, py) {
     const a = attr();
-    const jx = px + (Math.random() - 0.5) * jitter;
-    const jy = py + (Math.random() - 0.5) * jitter;
     const scale = minDim * a.u;
-    const s = a.seed((jx - anchorX()) / scale, (jy - anchorY()) / scale);
-    particles.push({ s, pts: [], age: 0 });
-    if (particles.length > MAX_PARTICLES) particles.shift();
+    const p = pool.pop() || makeParticle();
+    const jx = px + (Math.random() - 0.5) * JITTER;
+    const jy = py + (Math.random() - 0.5) * JITTER;
+    a.seed((jx - anchorX()) / scale, (jy - anchorY()) / scale, p.s);
+    p.head = -1; p.len = 0; p.age = 0; p.phase = TICK;
+    live.push(p);
+    if (live.length > MAX_PARTICLES) pool.push(live.shift());
   }
 
   function integrate(a, s, dt) {
@@ -142,100 +154,119 @@
   }
 
   function frame(t) {
-    const dt = Math.min((t - lastT) / 1000 || 0.016, 0.033);
+    const dt = Math.min(Math.max(0, (t - lastT) / 1000) || 0.016, 0.05);
     lastT = t;
-    elapsed += dt;
     sinceMove += dt;
+    vt += dt;
+    intensity += (1 - intensity) * Math.min(dt * 2.5, 1);
 
-    ctx.clearRect(0, 0, W, H);
-
-    // seed new streaks
-    if (sinceMove < CURSOR_HOLD) {
-      for (let i = 0; i < SPAWN_CURSOR; i++) spawn(mouseX, mouseY, 8 * DPR);
+    // Target: the pointer while it is active, otherwise a virtual cursor
+    // sweeping a Lissajous path around the anchor (the same path shape as
+    // the br1.me hero). The seed point eases towards the target.
+    const pointerOn = sinceMove < POINTER_HOLD;
+    let tx, ty;
+    if (pointerOn) {
+      tx = pointerX; ty = pointerY;
     } else {
-      wanderPoint(wp);
-      for (let i = 0; i < SPAWN_AMBIENT; i++) {
-        if (Math.random() < 0.3) {
-          // scatter some seeds across the whole basin so the lobes fill out
-          const ang = Math.random() * Math.PI * 2;
-          const rad = Math.sqrt(Math.random()) * minDim * 0.3;
-          spawn(anchorX() + Math.cos(ang) * rad, anchorY() + Math.sin(ang) * rad, 6 * DPR);
-        } else {
-          spawn(wp[0], wp[1], 12 * DPR);
-        }
-      }
+      tx = anchorX() + Math.cos(vt * 0.9) * minDim * 0.21;
+      ty = anchorY() + Math.sin(vt * 1.3) * minDim * 0.19;
     }
+    const follow = 1 - Math.exp(-dt * (pointerOn ? 18 : 2.5));
+    seedX += (tx - seedX) * follow;
+    seedY += (ty - seedY) * follow;
+
+    spawnDebt += SPAWN_RATE * dt;
+    while (spawnDebt >= 1) { spawn(seedX, seedY); spawnDebt -= 1; }
+
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1.1;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
 
     const a = attr();
     const scale = minDim * a.u;
     const cx = anchorX(), cy = anchorY();
-    const margin = 24 * DPR;
+    const margin = 20;
+    const fadeK = ALPHA_STEPS * intensity;
 
-    ctx.lineWidth = 1.1 * DPR;
-    ctx.lineCap = "round";
-
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      integrate(a, p.s, dt);
-      a.proj(p.s, o2);
-      const x = cx + o2[0] * scale;
-      const y = cy + o2[1] * scale;
+    for (let i = live.length - 1; i >= 0; i--) {
+      const p = live[i];
       p.age += dt;
 
+      // Advance in steps that land exactly on each TICK boundary and record a
+      // trail point there, so points are evenly spaced in time: a slow frame
+      // lays down several points instead of one long straight segment.
+      let left = dt, dead = false;
+      while (p.phase + left >= TICK) {
+        const step = TICK - p.phase;
+        integrate(a, p.s, step);
+        left -= step;
+        p.phase = 0;
+        a.proj(p.s, o2);
+        const x = cx + o2[0] * scale, y = cy + o2[1] * scale;
+        if (!(x > -margin && x < W + margin && y > -margin && y < H + margin)) { dead = true; break; }
+        p.head = (p.head + 1) % TRAIL;
+        p.xs[p.head] = x;
+        p.ys[p.head] = y;
+        if (p.len < TRAIL) p.len++;
+      }
+      if (!dead) {
+        integrate(a, p.s, left);
+        p.phase += left;
+      }
+
       const ease = Math.exp(-p.age * FADE);
-      const out = !isFinite(x) || !isFinite(y) ||
-        x < -margin || x > W + margin || y < -margin || y > H + margin;
-      if (ease < 0.02 || out) { particles.splice(i, 1); continue; }
+      if (dead || ease < 0.02) {
+        pool.push(p);
+        live[i] = live[live.length - 1];
+        live.pop();
+        continue;
+      }
+      if (p.len < 1) continue;
+      const level = Math.round(ease * fadeK);
+      if (level < 1) continue;
 
-      p.pts.push(x, y);
-      if (p.pts.length > TRAIL * 2) p.pts.splice(0, 2);
-      if (p.pts.length < 4) continue;
-
-      ctx.strokeStyle = `rgba(${wisp},${baseAlpha * ease})`;
+      // recorded points, oldest first, then the exact current head
+      a.proj(p.s, o2);
+      ctx.strokeStyle = styles[level];
       ctx.beginPath();
-      ctx.moveTo(p.pts[0], p.pts[1]);
-      for (let j = 2; j < p.pts.length; j += 2) ctx.lineTo(p.pts[j], p.pts[j + 1]);
+      let k = (p.head - p.len + 1 + TRAIL) % TRAIL;
+      ctx.moveTo(p.xs[k], p.ys[k]);
+      for (let j = 1; j < p.len; j++) {
+        k = (k + 1) % TRAIL;
+        ctx.lineTo(p.xs[k], p.ys[k]);
+      }
+      ctx.lineTo(cx + o2[0] * scale, cy + o2[1] * scale);
       ctx.stroke();
     }
 
     if (running) rafId = requestAnimationFrame(frame);
   }
 
-  /* one calm non-animated rendering for reduced motion */
-  function staticRender() {
-    ctx.clearRect(0, 0, W, H);
-    const a = attr();
-    const scale = minDim * a.u;
-    const cx = anchorX(), cy = anchorY();
-    const s = a.seed(0.5, 0.5);
-    for (let k = 0; k < 300; k++) integrate(a, s, 0.016);
-    ctx.strokeStyle = `rgba(${wisp},${baseAlpha * 0.22})`;
-    ctx.lineWidth = 1 * DPR;
-    ctx.beginPath();
-    a.proj(s, o2);
-    ctx.moveTo(cx + o2[0] * scale, cy + o2[1] * scale);
-    for (let k = 0; k < 20000; k++) {
-      integrate(a, s, 0.01);
-      a.proj(s, o2);
-      ctx.lineTo(cx + o2[0] * scale, cy + o2[1] * scale);
-    }
-    ctx.stroke();
-  }
-
   function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
     const r = canvas.getBoundingClientRect();
-    W = Math.round(r.width * DPR);
-    H = Math.round(r.height * DPR);
-    canvas.width = W;
-    canvas.height = H;
-    minDim = Math.min(W, H);
+    // The canvas spans the whole hero, so painting it is the real cost, not the
+    // maths. Cap the backing store at a pixel budget: phones keep 2x, a large
+    // laptop screen drops to about 1.25x, where thin translucent lines look the same.
+    const budget = Math.sqrt(PIXEL_BUDGET / Math.max(1, r.width * r.height));
+    DPR = Math.max(1, Math.min(window.devicePixelRatio || 1, 2, budget));
+    const w = Math.round(r.width * DPR), h = Math.round(r.height * DPR);
+    // Recorded trail points are in the old frame; restart each trail so no
+    // streak draws a long line from the old layout to the new one.
+    if (r.width !== W || r.height !== H) for (const p of live) p.len = 0;
+    W = r.width; H = r.height; minDim = Math.min(W, H);
+    // Resizing a canvas clears it and is costly, so only do it when the
+    // backing size really changes (phones fire resize as the URL bar moves).
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
     readColors();
-    if (reduceMotion) staticRender();
   }
 
   function start() {
-    if (running || reduceMotion) return;
+    if (running) return;
     running = true;
     lastT = performance.now();
     rafId = requestAnimationFrame(frame);
@@ -247,21 +278,29 @@
 
   function switchTo(i) {
     current = (i + ATTRACTORS.length) % ATTRACTORS.length;
-    particles = [];
-    ctx.clearRect(0, 0, W, H);
-    if (reduceMotion) staticRender();
+    while (live.length) pool.push(live.pop());
     return ATTRACTORS[current].name;
   }
 
-  /* ---------- events ---------- */
-  window.addEventListener("pointermove", (e) => {
+  /* ---------- input ----------
+     Pointer events cover mouse and pen. On phones the browser takes over a
+     touch as soon as it becomes a scroll, so touch events (passive, they keep
+     firing while the page scrolls) steer the field with a finger.          */
+  function steer(clientX, clientY) {
     const r = canvas.getBoundingClientRect();
-    if (e.clientY <= r.bottom && e.clientY >= r.top) {
-      mouseX = (e.clientX - r.left) * DPR;
-      mouseY = (e.clientY - r.top) * DPR;
+    if (clientY >= r.top && clientY <= r.bottom && clientX >= r.left && clientX <= r.right) {
+      pointerX = clientX - r.left;
+      pointerY = clientY - r.top;
+      if (sinceMove >= POINTER_HOLD) { seedX = pointerX; seedY = pointerY; }
       sinceMove = 0;
     }
+  }
+  window.addEventListener("pointermove", (e) => {
+    if (e.pointerType !== "touch") steer(e.clientX, e.clientY);
   }, { passive: true });
+  const onTouch = (e) => { const t = e.touches[0]; if (t) steer(t.clientX, t.clientY); };
+  window.addEventListener("touchstart", onTouch, { passive: true });
+  window.addEventListener("touchmove", onTouch, { passive: true });
 
   let resizeT;
   window.addEventListener("resize", () => {
@@ -275,15 +314,12 @@
   });
   if ("IntersectionObserver" in window) {
     new IntersectionObserver((entries) => {
-      heroVisible = entries[0].isIntersecting;
+      heroVisible = entries[entries.length - 1].isIntersecting;
       if (heroVisible && !document.hidden) start(); else stop();
     }, { threshold: 0.02 }).observe(canvas);
   }
 
-  document.addEventListener("themechange", () => {
-    readColors();
-    if (reduceMotion) staticRender();
-  });
+  document.addEventListener("themechange", readColors);
 
   /* ---------- public api ---------- */
   window.AttractorField = {
@@ -292,7 +328,12 @@
     name: () => ATTRACTORS[current].name,
   };
 
-  /* ---------- boot ---------- */
+  /* ---------- boot ----------
+     The field animates even when the system asks for reduced motion: it is
+     a slow, low-contrast background with no flashing, and a frozen frame read
+     as a broken page on phones and work PCs with animations turned off. The
+     scroll reveals and smooth scrolling in main.js still respect the setting. */
   resize();
-  if (reduceMotion) staticRender(); else start();
+  seedX = anchorX(); seedY = anchorY();
+  start();
 })();

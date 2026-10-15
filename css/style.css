@@ -56,6 +56,12 @@ a { color: inherit; }
   width: 100%;
   height: 100%;
   display: block;
+  /* Edgeless field: fade the wisps out radially around the field's anchor
+     (js/attractors.js: 66% / 50% wide, 50% / 68% narrow). The browser
+     composites the mask, so it costs nothing per frame. */
+  --field-mask: radial-gradient(ellipse 46% 62% at 66% 50%, #000 22%, transparent 100%);
+  -webkit-mask-image: var(--field-mask);
+          mask-image: var(--field-mask);
 }
 
 .hero-inner {
@@ -322,6 +328,7 @@ html.js .reveal.visible { opacity: 1; transform: none; }
 /* ---------------- responsive ---------------- */
 
 @media (max-width: 860px) {
+  #attractor-canvas { --field-mask: radial-gradient(ellipse 85% 42% at 50% 68%, #000 22%, transparent 100%); }
   .hero-inner { padding-top: 13vh; }
   .hero-nav { gap: 0 1.4rem; }
 

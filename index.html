@@ -64,16 +64,25 @@
     </div>
     <a class="thumb thumb-svg" href="https://github.com/Warisback/Vokal" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
       <svg viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.2">
-        <ellipse cx="240" cy="168" rx="118" ry="98"/>
-        <ellipse cx="240" cy="150" rx="118" ry="94"/>
-        <rect x="176" y="98" width="128" height="96" rx="10"/>
-        <text x="240" y="132" text-anchor="middle" font-size="13" letter-spacing="4" stroke="none" fill="currentColor" font-family="inherit">VOKAL</text>
-        <polyline points="192,166 208,166 216,150 226,180 236,142 246,176 254,160 268,160" stroke-width="1.6"/>
-        <line x1="196" y1="182" x2="284" y2="182" stroke-dasharray="2 5"/>
-        <path d="M 348 118 a 62 62 0 0 1 0 88" opacity=".55"/>
-        <path d="M 366 102 a 88 88 0 0 1 0 120" opacity=".35"/>
-        <path d="M 132 118 a 62 62 0 0 0 0 88" opacity=".55"/>
-        <path d="M 114 102 a 88 88 0 0 0 0 120" opacity=".35"/>
+        <defs>
+          <mask id="vk-mel" maskUnits="userSpaceOnUse" x="52" y="88" width="376" height="108">
+            <image href="assets/img/vokal-mel.png" x="51.248" y="88" width="377.504" height="108" preserveAspectRatio="none"/>
+          </mask>
+        </defs>
+        <line x1="52" y1="56" x2="428" y2="56" stroke-width="1" opacity=".4"/>
+        <path d="M69.62 55.6V56.3M71.97 54.9V57.1M74.33 54.7V57.3M76.67 53.6V57M79.03 50.5V58.3M81.38 44.8V62.3M83.72 44V62.6M86.08 45.8V61.7M88.43 52.5V57.1M90.78 54.2V56.5M93.12 55V56.2M95.47 55V56.2M97.83 53V57.3M100.18 51.2V58.7M102.53 49.2V59.2M104.88 47.2V59.8M107.22 46.2V61.6M109.58 47.6V60M111.93 49.1V59.2M114.28 50.5V58.3M116.62 52.4V57.4M118.98 54.5V56M126.03 55.6V56.3M128.38 55V57.3M130.73 53V57.1M133.07 52V57.3M135.43 49.9V57.8M137.78 44.8V60.6M140.12 36V65M142.48 36V65.3M144.82 36V67.1M147.18 36V66.7M149.53 36V66.7M151.88 41.9V63.5M154.23 47.6V57.9M156.57 50.3V59.3M158.93 51.9V59.1M161.28 51.3V60.9M163.62 51.7V60.3M165.98 54.2V57.9M168.32 55.3V56.6M170.68 53.2V57M173.03 50.6V58M175.38 46.7V58.4M177.73 44.6V61.1M180.08 45.1V61.1M182.43 46V61.3M184.78 46V61.3M187.12 47V60.8M189.47 47.7V60.8M191.83 52.1V57.7M194.18 54V56.7M196.53 54.2V56.6M198.88 52.4V57.5M201.22 47.6V59.9M203.58 45.6V63.5M205.93 44.4V61.4M208.28 47.9V59.3M210.62 49.8V58.3M212.97 50.9V57.8M215.33 52.3V57.2M217.68 50.8V57.7M220.03 49.7V58.8M222.38 48V63.3M224.72 46.9V63.4M227.08 45.8V65.1M229.43 43.7V67.5M231.78 41.3V69.1M234.12 38.5V69.6M236.47 40.1V71.5M238.83 41.2V66.6M241.18 41.7V62.2M243.53 52.9V58.5M245.88 49.3V58.8M248.22 46V60.1M250.58 44.3V60.4M252.93 43.9V62.5M255.28 44V63.2M257.62 46.7V62.2M259.98 48.8V60.8M262.33 50.6V59.7M264.68 52.8V58.3M267.02 52.5V57.6M269.38 55.1V57.5M271.73 55.4V56.6M344.57 55.4V56.4M346.93 55.6V56.3M349.28 55.5V57.5M351.62 50V58.3M353.98 47.3V59.6M356.32 45.1V60.6M358.68 46.3V63.4M361.03 45.5V63.4M363.38 46V63.5M365.73 45.3V63.1M368.07 46.3V62.3M370.43 46.1V62.6M372.78 47.6V62M375.12 48.7V60.1M377.48 49.2V59.8M379.82 50.4V58.8M382.18 52.2V57.8M384.53 52.9V57.4M386.88 53.6V57.1M389.23 54.7V56.3M391.57 54.2V57.8M393.93 53.5V59.1M396.28 52.6V59M398.62 52.6V59.6M400.98 53.2V59.3M403.32 53.3V59M405.68 53.8V58.8M408.03 55.1V56.9M410.38 55.8V56.2" stroke-width="1"/>
+        <rect x="52" y="88" width="376" height="108" fill="currentColor" stroke="none" mask="url(#vk-mel)"/>
+        <g opacity=".6"><line x1="53.5" y1="210" x2="104.6" y2="210"/><line x1="107.6" y1="210" x2="137.7" y2="210"/><line x1="140.7" y1="210" x2="170.8" y2="210"/><line x1="173.8" y1="210" x2="200.9" y2="210"/><line x1="203.9" y1="210" x2="240" y2="210"/><line x1="243" y1="210" x2="294.1" y2="210"/><line x1="351.3" y1="210" x2="393.4" y2="210"/></g>
+        <g font-size="15" font-style="italic" text-anchor="middle" stroke="none" fill="currentColor" font-family="inherit">
+          <text x="79.1" y="230">Could</text>
+          <text x="122.7" y="230">you</text>
+          <text x="155.8" y="230">pass</text>
+          <text x="187.4" y="230">me</text>
+          <text x="222" y="230">the</text>
+          <text x="268.6" y="230">water?</text>
+          <text x="372.4" y="230">Please.</text>
+        </g>
+        <text x="240" y="262" text-anchor="middle" font-size="13" font-style="italic" stroke="none" fill="currentColor" opacity=".8" font-family="inherit">log-mel input · whisper tiny.en · no-speech score 0.015</text>
       </svg>
     </a>
   </article>
